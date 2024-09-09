@@ -1,8 +1,8 @@
-import dayjs from 'dayjs';
-import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { ConfigType } from '@nestjs/config';
 
 import { BlogUserRepository, BlogUserEntity } from '@project/blog-user';
-import { UserRole } from '@project/core';
+import { dbConfig } from '@project/account-config';
 
 import { CreateUserDto } from '../dto/create-user.dto';
 import { AuthenticationResponseMessage } from './authentication.constant';
@@ -11,7 +11,10 @@ import { LoginUserDto } from '../dto/login-user.dto';
 @Injectable()
 export class AuthenticationService {
   constructor(
-    private readonly blogUserRepository: BlogUserRepository
+    private readonly blogUserRepository: BlogUserRepository,
+
+    @Inject(dbConfig.KEY)
+    private readonly databaseConfig: ConfigType<typeof dbConfig>,
   ) {}
 
   public async register(dto: CreateUserDto): Promise<BlogUserEntity> {
